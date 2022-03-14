@@ -8,13 +8,13 @@ class BasicTests(unittest.TestCase):
 
     def setUp(self):
         self.pgcheck = pg_check.PgCheck()
-        self.pgcheck.config_section = "test"
         self.pgcheck.read_config()
 
     def tearDown(self):
         if os.path.isfile("/tmp/node_disabled"):
             os.remove("/tmp/node_disabled")
-        self.pgcheck.connection.close()
+        if self.pgcheck.connection is not None:
+            self.pgcheck.connection.close()
 
     def test_disabling_node(self):
         assert(self.pgcheck.disabled is False)
@@ -22,21 +22,17 @@ class BasicTests(unittest.TestCase):
     def test_disable_node(self):
         """ This test explicitly sets the disable status for testing purposes"""
         open("/tmp/node_disabled", 'a').close() if not os.path.isfile("/tmp/node_disabled") else False
-        self.pgcheck.is_disabled()
+        self.pgcheck.is_enabled()
         assert self.pgcheck.disabled
 
     def test_get_port(self):
         assert(self.pgcheck.port == 5432)
 
     def test_get_host(self):
-        assert(self.pgcheck.hostname == "test")
+        assert(self.pgcheck.hostname == "web1.moreira.dom")
 
     def test_get_user(self):
-        assert(self.pgcheck.user == "monitoring")
-
-    def test_get_password(self):
-        #assert(self.pgcheck.password == "testpasswd")
-        assert True
+        assert(self.pgcheck.user == "numberninja")
 
     def test_connect(self):
         self.pgcheck.connect()

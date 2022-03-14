@@ -12,6 +12,15 @@ Python code to allow a proxy, for example HAProxy to check health of a Postgresq
 
 ## How to setup 
 
+## Config file 
+```
+[test2]
+hostname=test
+port=5432
+user=monitoring
+password=testpasswd
+```
+
 ### Create database user 
 ### Setup systemd
 ### Setup HaProxy
