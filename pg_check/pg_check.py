@@ -24,7 +24,7 @@ class PgCheck:
         self.dbname = None
         self.use_ssl = None
         self.connection = None
-        logging.basicConfig(filename='pgcheck.log')
+        logging.basicConfig(filename='/var/log/pgcheck.log')
 
         if self.is_enabled():
             self.read_config()
@@ -78,7 +78,7 @@ class PgCheck:
             Content-Type: text/plain\r\n
             Connection: close\r\n
             Content-Length: 51\r\n
-            Postgresql Cluster Node is manually disabled remove /tmp/node_disabled file to enable
+            Postgresql Cluster Node is manually disabled remove /tmp/node_disabled file to enable \r\n
             """)
         if self.is_online is False:
             print("""
@@ -86,7 +86,7 @@ class PgCheck:
             Content-Type: text/plain\r\n
             Connection: close\r\n
             Content-Length: 51\r\n
-            Postgresql Cluster Node is offline or connection was not successful
+            Postgresql Cluster Node is offline or connection was not successful \r\n
             """)
         if self.is_master:
             print("""
@@ -94,7 +94,7 @@ class PgCheck:
             Content-Type: text/plain\r\n
             Connection: close\r\n
             Content-Length: 51\r\n
-            Postgresql Cluster Node ready for service
+            Postgresql Cluster Node ready for service \r\n
             """)
 
         if self.is_slave:
@@ -103,7 +103,7 @@ class PgCheck:
             Content-Type: text/plain\r\n
             Connection: close\r\n
             Content-Length: 51\r\n
-            Postgresql Cluster Node read-only
+            Postgresql Cluster Node read-only \r\n
             """)
 
 
