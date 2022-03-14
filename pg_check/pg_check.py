@@ -12,7 +12,6 @@ class PgCheck:
     """
 
     def __init__(self):
-        self.disabled = None
         self.is_slave = None
         self.is_master = None
         self.is_online = None
@@ -27,9 +26,9 @@ class PgCheck:
         if self.is_enabled():
             self.read_config()
             self.connect()
+            self.connect()
 
     def is_enabled(self):
-        print("node disable is: %s", self.disabled)
         return False if os.path.isfile("/tmp/node_disabled") else True
 
     def read_config(self):
