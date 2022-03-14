@@ -2,6 +2,7 @@
 import psycopg2
 import os
 import configparser
+import logging
 
 
 class PgCheck:
@@ -23,6 +24,8 @@ class PgCheck:
         self.dbname = None
         self.use_ssl = None
         self.connection = None
+        logging.basicConfig(filename='pgcheck.log')
+
         if self.is_enabled():
             self.read_config()
             self.connect()
@@ -37,24 +40,24 @@ class PgCheck:
             config.read("pgcheck.ini")
             for section in config.sections():
                 self.hostname = config[section].get('hostname', 'localhost')
-                self.port = int(config[section].getint('port', 5432 ))
+                self.port = int(config[section].getint('port', 5432))
                 self.user = config[section].get('user', 'postgres')
                 self.password = config[section].get('password', os.environ.get('PGCHECK_PASSWORD'))
                 self.dbname = config[section].get('dbname', 'postgres')
         except configparser.NoSectionError as noSectionError:
-            print("Config section does not exist: %s ", noSectionError.section)
+            logging.error("Config section does not exist: %s ", noSectionError.section)
         except configparser.Error as ParseError:
-            print(ParseError)
+            logging.error(ParseError)
 
     def connect(self):
         try:
             self.connection = psycopg2.connect(dbname=self.dbname, user=self.user, host=self.hostname, port=self.port,
                                                password=self.password)
         except psycopg2.OperationalError as connErr:
-            print("Could not connect %s", connErr)
+            logging.error("Could not connect %s", connErr)
             self.is_online = False
         except psycopg2.Error as dbErr:
-            print("Could not connect %s", dbErr.pgerror)
+            logging.error("Could not connect %s", dbErr.pgerror)
         else:
             self.is_online = True
 
