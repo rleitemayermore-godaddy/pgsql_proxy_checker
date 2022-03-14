@@ -1,0 +1,20 @@
+# default: on
+
+# description: pgsqlchk
+
+service pgsqlchk
+
+{
+
+   disable = no
+   flags = REUSE
+   socket_type = stream
+   port = 9200
+   wait = no
+   user = nobody
+   server = /opt/pg_check/pgcheck.py
+   log_on_failure += USERID
+   only_from = 0.0.0.0/0
+   per_source = UNLIMITED
+
+}
