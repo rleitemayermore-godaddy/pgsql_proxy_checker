@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import sys
+
 import psycopg2
 import os
 import configparser
@@ -24,6 +26,7 @@ class PgCheck:
         self.dbname = None
         self.use_ssl = None
         self.connection = None
+        self.exitCode = 0
         logging.basicConfig(filename='/var/log/pgcheck.log')
 
         if self.is_enabled():
@@ -77,23 +80,27 @@ class PgCheck:
             HTTP/1.1 503 Service Unavailable\r\n
             Content-Type: text/plain\r\n
             Connection: close\r\n
-            Content-Length: 51\r\n
+            Content-Length: 43\r\n
             Postgresql Cluster Node is manually disabled remove /tmp/node_disabled file to enable \r\n
             """)
+            self.exitCode = 1
+
         if self.is_online is False:
             print("""
             HTTP/1.1 503 Service Unavailable\r\n
             Content-Type: text/plain\r\n
             Connection: close\r\n
-            Content-Length: 51\r\n
+            Content-Length: 43\r\n
             Postgresql Cluster Node is offline or connection was not successful \r\n
             """)
+            self.exitCode = 1
+
         if self.is_master:
             print("""
             HTTP/1.1 200 OK\r\n
             Content-Type: text/plain\r\n
             Connection: close\r\n
-            Content-Length: 51\r\n
+            Content-Length: 40\r\n
             Postgresql Cluster Node ready for service \r\n
             """)
 
@@ -102,9 +109,10 @@ class PgCheck:
             HTTP/1.1 503 Service Unavailable\r\n
             Content-Type: text/plain\r\n
             Connection: close\r\n
-            Content-Length: 51\r\n
+            Content-Length: 43\r\n
             Postgresql Cluster Node read-only \r\n
             """)
+            self.exitCode = 1
 
 
 def main():
@@ -112,6 +120,7 @@ def main():
     if pgcheck.is_online:
         pgcheck.check_recovery_mode()
     pgcheck.reply()
+    sys.exit(self.exitCode)
 
 
 if __name__ == '__main__':
